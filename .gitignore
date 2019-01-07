@@ -1,0 +1,4 @@
+objdir
+*.o
+simv
+*.vcd
