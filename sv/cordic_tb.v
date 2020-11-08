@@ -30,20 +30,12 @@ initial begin
     $itor(in_data_i[`WIDTH-1:0]) * sf,
     $itor(in_data_i[2*`WIDTH-1:`WIDTH]) * sf
   );
-  #(STEP) if (in_valid_i && out_ready_i) in_valid_i = 0; in_data_i = '0;
-  #(7*STEP) $display("output = %b", out_data_o);
-  $display("sqrt = %f",
-    $itor(out_data_o) * sf);
   #(STEP) in_data_i = 64'h00060000_00080000;
   in_valid_i = 1;
   $display("input = %f^2 + %f^2",
     $itor(in_data_i[`WIDTH-1:0]) * sf,
     $itor(in_data_i[2*`WIDTH-1:`WIDTH]) * sf
   );
-  #(STEP) if (in_valid_i && out_ready_i) in_valid_i = 0; in_data_i = '0;
-  #(7*STEP) $display("output = %b", out_data_o);
-  $display("sqrt = %f",
-    $itor(out_data_o) * sf);
   #(STEP) in_data_i = 64'h00730000_00fc0000;
   in_valid_i = 1;
   $display("input = %f^2 + %f^2",
@@ -51,7 +43,13 @@ initial begin
     $itor(in_data_i[2*`WIDTH-1:`WIDTH]) * sf
   );
   #(STEP) if (in_valid_i && out_ready_i) in_valid_i = 0; in_data_i = '0;
-  #(7*STEP) $display("output = %b", out_data_o);
+  #(5*STEP) $display("output = %b", out_data_o);
+  $display("sqrt = %f",
+    $itor(out_data_o) * sf);
+  #(STEP) $display("output = %b", out_data_o);
+  $display("sqrt = %f",
+    $itor(out_data_o) * sf);
+  #(STEP) $display("output = %b", out_data_o);
   $display("sqrt = %f",
     $itor(out_data_o) * sf);
 
