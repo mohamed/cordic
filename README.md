@@ -9,7 +9,7 @@ several functions. Among these functions is the square-root of the sum of two sq
 as shown [here](https://www.mathworks.com/help/fixedpoint/ug/compute-square-root-using-cordic.html).
 In this mode, CORDIC accepts two positive inputs: `x` and `y` and provides as a result:
   
-  $$ \sqrt(x^2 + y^2) $$
+  $$ \sqrt{x^2 + y^2} $$
 
 This repository contains a synthesizable SystemVerilog implementation of the above CORDIC algorithm.
 The design uses `Q16.F16` fixed-point format and is fully pipelined which allows it to

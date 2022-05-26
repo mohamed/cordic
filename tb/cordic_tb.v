@@ -16,19 +16,18 @@ logic [WIDTH-1:0] x_data_i, y_data_i;
 logic valid_o;
 logic [WIDTH-1:0] data_o;
 
+real x, y;
 int idx;
 real expected[S];
 int fd;
-logic [31:0] seed;
 int j;
 real sqrt;
 
 `define gen_data \
-    x_data_i = {$random(seed)}; \
-    y_data_i = {$random(seed)}; \
-    x_data_i[WIDTH-1:WIDTH-6] = 0; \
-    y_data_i[WIDTH-1:WIDTH-6] = 0; \
-    expected[idx++] = $sqrt($pow(`fixed2real(x_data_i,F),2.0) + $pow(`fixed2real(y_data_i,F),2.0));
+    x_data_i = `real2fixed(x,I,F); \
+    y_data_i = `real2fixed(y,I,F); \
+    expected[idx++] = $sqrt($pow(x,2.0) + $pow(y,2.0)); \
+    x += 1.0; y += 1.0;
 
 `define print_data \
     $display("input = %f^2 + %f^2", `fixed2real(x_data_i,F), `fixed2real(y_data_i,F));
@@ -43,23 +42,17 @@ initial begin
   y_data_i = 0;
   valid_i = 0;
   idx = 0;
-  seed = 7;
+  x = 1.0;
+  y = 1.0;
   j = 0;
-  expected[idx++] = 5.0;
-  expected[idx++] = 10.0;
-  expected[idx++] = 277.0;
-  expected[idx++] = 3.0;
 
   #(STEP)  rst_ni = 0;
   #(2*STEP)  rst_ni = 1;
   #(STEP/2)
-  #(STEP) y_data_i = `real2fixed(3.0,I,F); x_data_i = `real2fixed(4.0,I,F);
-  valid_i = 1;
-  #(STEP) y_data_i = `real2fixed(6.0,I,F);  x_data_i = `real2fixed(8.0,I,F);
-  #(STEP) y_data_i = `real2fixed(252.0,I,F); x_data_i = `real2fixed(115.0,I,F);
-  #(STEP) y_data_i = `real2fixed($sqrt(2),I,F); x_data_i = `real2fixed($sqrt(7),I,F);
-  for (int i = 4; i < S; i++) begin
+  for (int i = 0; i < S; i++) begin
     #(STEP) `gen_data
+    valid_i = 1;
+    //`print_data
   end
   #(STEP) valid_i = 0; x_data_i = '0; y_data_i = '0;
   #(1000*STEP) $fclose(fd); $finish;
@@ -72,6 +65,7 @@ end
 always begin
   #(STEP) if (valid_o) begin
     sqrt = `fixed2real(data_o,F);
+    //$display("%f,%f", sqrt, expected[j]);
     $fdisplay(fd, "%f,%f", sqrt, expected[j]);
     j++;
   end
