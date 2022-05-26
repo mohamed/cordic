@@ -1,0 +1,5 @@
+simv
+netlist.v
+example1_typ.lib
+*.csv
+*.vcd
