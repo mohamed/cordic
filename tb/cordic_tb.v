@@ -47,7 +47,7 @@ initial begin
   j = 0;
 
   #(STEP)  rst_ni = 0;
-  #(2*STEP)  rst_ni = 1;
+  #(6*STEP)  rst_ni = 1;
   #(STEP/2)
   for (int i = 0; i < S; i++) begin
     #(STEP) `gen_data

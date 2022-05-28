@@ -1,6 +1,6 @@
 `define DFF(clk,rst,d,q,rst_val) \
-    always_ff @(posedge clk) begin \
-        if (!rst) begin \
+    always_ff @(posedge clk, negedge rst) begin \
+        if (~rst) begin \
             q <= rst_val; \
         end else begin \
             q <= d; \
@@ -8,8 +8,8 @@
     end
 
 `define DFFE(clk,rst,en,d,q,rst_val) \
-    always_ff @(posedge clk) begin \
-        if (!rst) begin \
+    always_ff @(posedge clk, negedge rst) begin \
+        if (~rst) begin \
             q <= rst_val; \
         end else begin \
             if (en) begin \

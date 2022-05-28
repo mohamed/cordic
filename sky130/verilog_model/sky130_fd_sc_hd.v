@@ -28180,8 +28180,8 @@ module sky130_fd_sc_hd__dfrtp (
     wire cond1          ;
 
     //                                  Name  Output  Other arguments
-    not                                 not0 (RESET , RESET_B_delayed                                    );
-    sky130_fd_sc_hd__udp_dff$PR_pp$PG$N dff0 (buf_Q , D_delayed, CLK_delayed, RESET, notifier, VPWR, VGND);
+    not                                 not0 (RESET , RESET_B                                    );
+    sky130_fd_sc_hd__udp_dff$PR_pp$PG$N dff0 (buf_Q , D, CLK, RESET, notifier, VPWR, VGND);
     assign awake = ( VPWR === 1'b1 );
     assign cond0 = ( awake && ( RESET_B_delayed === 1'b1 ) );
     assign cond1 = ( awake && ( RESET_B === 1'b1 ) );

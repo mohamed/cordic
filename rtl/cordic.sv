@@ -9,6 +9,7 @@
 // The datapath is fully pipelined and supports a new input
 // every clock cycle
 
+
 `include "macros.svh"
 
 module cordic #(
