@@ -37,7 +37,7 @@ sta: ${LIBERTY_LIB} netlist.v
 	sta opensta.tcl
 
 post_synth_sim: $(PRIMITIVES) netlist.v tb/cordic_tb.v
-	$(IVERILOG) ${IVERILOG_ARGS} -o postsyn_simv $^
+	$(IVERILOG) $(IVERILOG_ARGS) -o postsyn_simv $^
 	./postsyn_simv
 
 clean:

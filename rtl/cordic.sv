@@ -30,7 +30,7 @@ module cordic #(
     output logic [WIDTH-1:0]          data_o
 );
 
-  localparam int STAGES = (WIDTH >> 1);
+  localparam int STAGES = (11);
   // CORDIC gain up to 10 decimal digits
   localparam logic signed [64-1:0] realGain = 64'h000000009b75eda8;
   localparam logic signed [WIDTH-1:0] fixedGain = `SLICE(realGain,WIDTH);
