@@ -3,7 +3,7 @@ SRCS := rtl/cordic.sv
 TOP  := cordic
 
 VERILATOR          := verilator
-VERILATOR_ARGS      = -Wall -Irtl --unroll-count 256 --top-module $(TOP)
+VERILATOR_ARGS      = -Wall -Irtl --top-module $(TOP)
 
 IVERILOG           := iverilog
 IVERILOG_ARGS       = -Wall -g2012 -Irtl
