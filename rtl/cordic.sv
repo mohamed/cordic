@@ -10,6 +10,7 @@
 // every clock cycle
 
 `timescale 1ns/1ps
+`default_nettype none
 
 `include "macros.svh"
 
@@ -32,17 +33,21 @@ module cordic #(
 );
 
   localparam int STAGES = (11);
+  // add guard bits
+  localparam int NI = Q_I + 3;
+  localparam int NF = Q_F + 3;
+  localparam int NW = NI + NF + 1;
   // CORDIC gain up to 10 decimal digits
-  localparam logic signed [64-1:0] realGain = 64'h000000009b75eda8;
-  localparam logic signed [WIDTH-1:0] fixedGain = `SLICE(realGain,WIDTH);
+  localparam logic signed [64-1:0] realGain = 64'h000000009b74eda8;
+  localparam logic signed [NW-1:0] fixedGain = `shrink_fixed(realGain,64,NI,NF);
 
   `STATIC_ASSERT((Q_I+Q_F+1) == WIDTH)
-  `STATIC_ASSERT(WIDTH < 64)
+  `STATIC_ASSERT(NW < 64)
 
-  typedef logic signed [WIDTH-1:0] data_t;
+  typedef logic signed [NW-1:0] data_t;
 
   /* verilator lint_off UNUSED */
-  logic signed [2*WIDTH-1:0] final_d, final_q;
+  logic signed [2*NW-1:0] final_d, final_q;
   data_t x_d[STAGES], y_d[STAGES], x_q[STAGES], y_q[STAGES];
   logic sign[STAGES];
   logic valid_d[STAGES+1], valid_q[STAGES+1];
@@ -62,8 +67,11 @@ module cordic #(
     end: gen_valid
   endgenerate
 
-  `DFFE(clk_i,rst_ni,valid_i,x_data_i,x_q[0],'0)
-  `DFFE(clk_i,rst_ni,valid_i,y_data_i,y_q[0],'0)
+  assign x_d[0] = `expand_fixed(x_data_i,Q_I,Q_F,NI,NF);
+  assign y_d[0] = `expand_fixed(y_data_i,Q_I,Q_F,NI,NF);
+
+  `DFFE(clk_i,rst_ni,valid_i,x_d[0],x_q[0],'0)
+  `DFFE(clk_i,rst_ni,valid_i,y_d[0],y_q[0],'0)
 
   genvar i;
   generate
@@ -72,7 +80,7 @@ module cordic #(
       `DFFE(clk_i,rst_ni,valid_q[i-1],y_d[i],y_q[i],'0)
 
       // Implement the CORDIC stage
-      assign sign[i-1] = y_q[i-1][WIDTH-1];
+      assign sign[i-1] = y_q[i-1][NW-1];
       assign x_d[i] = (sign[i-1] ? x_q[i-1]-(y_q[i-1] >>> (i-1)) : x_q[i-1]+(y_q[i-1] >>> (i-1)));
       assign y_d[i] = (sign[i-1] ? y_q[i-1]+(x_q[i-1] >>> (i-1)) : y_q[i-1]-(x_q[i-1] >>> (i-1)));
 
@@ -82,6 +90,6 @@ module cordic #(
   // Multiply by the gain here
   assign final_d = x_q[STAGES-1] * fixedGain;
   `DFFE(clk_i,rst_ni,valid_q[STAGES-1],final_d,final_q,'0)
-  assign data_o = `SLICE(final_q,WIDTH);
+  assign data_o = `shrink_fixed(final_q,2*NW,Q_I,Q_F);
 
 endmodule
