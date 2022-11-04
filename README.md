@@ -21,9 +21,9 @@ Build Instructions
 
 The makefile supports:
 
-  - Simulation using [iverilog](http://iverilog.icarus.com/)
-  - Basic linting using [Verilator](https://www.veripool.org/verilator/)
-  - Basic synthesis using [yosys](https://yosyshq.net/yosys/)
+  - Basic linting and simulation using [Verilator](https://www.veripool.org/verilator/) (requires > v5.002)
+  - Basic synthesis using [yosys](https://yosyshq.net/yosys/) (tested with v0.22)
+  - Post-synthesis simulation using [iverilog](http://iverilog.icarus.com/)
 
 To execute the makefile targets, just run:
 
