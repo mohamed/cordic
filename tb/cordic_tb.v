@@ -26,8 +26,8 @@ real sqrt;
 `define gen_data \
     x_data_i = `real2fixed(x,I,F); \
     y_data_i = `real2fixed(y,I,F); \
-    expected[idx++] = $sqrt($pow(x,2.0) + $pow(y,2.0)); \
-    x += 1.0; y += 1.0;
+    expected[idx] = $sqrt($pow(x,2.0) + $pow(y,2.0)); \
+    x += 1.0; y += 1.0; idx++;
 
 `define print_data \
     $display("input = %f^2 + %f^2", `fixed2real(x_data_i,F), `fixed2real(y_data_i,F));
@@ -59,14 +59,17 @@ initial begin
 end
 
 always begin
+  /* verilator lint_off BLKSEQ */
   #(STEP / 2) clk_i = ~clk_i;
 end
 
 always begin
   #(STEP) if (valid_o) begin
+    /* verilator lint_off BLKSEQ */
     sqrt = `fixed2real(data_o,F);
     //$display("%f,%f", sqrt, expected[j]);
     $fdisplay(fd, "%f,%f", sqrt, expected[j]);
+    /* verilator lint_off BLKSEQ */
     j++;
   end
 end

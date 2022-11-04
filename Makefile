@@ -3,7 +3,7 @@ SRCS := rtl/cordic.sv
 TOP  := cordic
 
 VERILATOR          := verilator
-VERILATOR_ARGS      = -Wall -Irtl --top-module $(TOP)
+VERILATOR_ARGS      = -Wall +incdir+rtl
 
 IVERILOG           := iverilog
 IVERILOG_ARGS       = -Wall -g2012 -Irtl
@@ -21,8 +21,8 @@ lint: ${SRCS}
 	${VERILATOR} ${VERILATOR_ARGS} --lint-only $^
 
 sim: ${SRCS} tb/$(TOP)_tb.v
-	${IVERILOG} ${IVERILOG_ARGS} -o simv $^
-	./simv
+	${VERILATOR} ${VERILATOR_ARGS} --timing --binary --trace $^
+	./obj_dir/V$(TOP)
 
 synth: ${LIBERTY_LIB} $(SRCS)
 	${YOSYS} -p "read_verilog -sv $(SRCS); \
@@ -42,4 +42,5 @@ post_synth_sim: $(PRIMITIVES) netlist.v tb/cordic_tb.v
 
 clean:
 	${RM} simv postsyn_simv *.vcd *.csv
+	${RM} -r obj_dir
 
